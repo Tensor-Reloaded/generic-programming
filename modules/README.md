@@ -28,5 +28,5 @@ make clean
 ```
 * Check the [Makefile](./Makefile)
 
-## Reference:
+## References
 * https://en.cppreference.com/w/cpp/language/modules
