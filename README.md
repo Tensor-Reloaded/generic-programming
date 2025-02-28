@@ -1,4 +1,28 @@
 # generic-programming
+A short introduction in generic programming in modern C++ with a ncie list of references.
+
+## Requirements
+* g++ >= 14
+
+<details>
+<summary>For Windows: WSL</summary>
+<br>
+<ol>
+  <li><a href="https://learn.microsoft.com/en-us/windows/wsl/install">https://learn.microsoft.com/en-us/windows/wsl/install</a></li>
+  <li><a href="https://code.visualstudio.com/docs/remote/wsl">https://code.visualstudio.com/docs/remote/wsl</a></li>
+  <li>See Linux Setup</li>
+</ol>
+</details>
+
+<details>
+<summary>Linux Setup</summary>
+<br>
+<pre>
+sudo apt-get update
+sudo apt-get install build-essentials
+sudo apt install g++-14
+</pre>
+</details>
 
 
 ## Resources
