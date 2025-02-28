@@ -8,7 +8,7 @@
 *.obj
 
 # Modules cache
-.gcm.cache/*
+*/gcm.cache/*
 
 # Precompiled Headers
 *.gch

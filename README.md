@@ -24,6 +24,10 @@ sudo apt install g++-14
 </pre>
 </details>
 
+## Contents
+1. Introduction to C++ modules: [modules](./modules/)
+
+***
 
 ## Resources
 * [21st Century C++](https://cacm.acm.org/blogcacm/21st-century-c/), by Bjarne Stroustrup.
