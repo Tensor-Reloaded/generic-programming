@@ -1,5 +1,5 @@
 # generic-programming
-A short introduction in generic programming in modern C++ with a ncie list of references.
+A short introduction in generic programming in modern C++ with a nice list of references.
 
 ## Requirements
 * g++ >= 14
