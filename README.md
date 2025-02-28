@@ -25,7 +25,7 @@ sudo apt install g++-14
 </details>
 
 ## Contents
-1. Introduction to C++ modules: [modules](./modules/)
+1. Introduction to C++20 modules: [modules](./modules/).
 
 ***
 
