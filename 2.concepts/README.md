@@ -29,7 +29,7 @@ This function can take any types, and compilation will fail if the `Drawable` ty
 
 ***
 Templates are often considered hard to use and "black magic" due to unreadable compile errors and cumbersome syntax. Modern C++ introduced concepts to enhance generic programming.
-Concepts extend templates by providing powerful predicate evaluation features for template parameters, enforcing compile-time constraints.
+Concepts extend templates by providing powerful predicate evaluation features for template parameters, enforcing compile-time constraints and providing better error messages.
 
 There are many useful concepts provided by the standard library, and we can define custom concepts as follows:
 ```
