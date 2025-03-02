@@ -55,9 +55,9 @@ concept Drawable = requires(T a, CanvasType b) {
 ```
 We can use the defined concepts as follows:
 ```
-// Drawable is a concept that depends on the canvas, therefore we therefore we must 
-// explicitly specify decltype(canvas) as the template argument for Drawable to ensure 
-// that drawable is constrained to a type that can draw on the given canvas.
+// Drawable is a concept that depends on the canvas, therefore we must explicitly specify
+// decltype(canvas) as the template argument for Drawable to ensure that drawable is
+// constrained to a type that can draw on the given canvas.
 void draw_on_canvas(Canvas auto& canvas, Drawable<decltype(canvas)> auto& drawable) {
     drawable.draw(canvas);
 }
