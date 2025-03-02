@@ -15,7 +15,7 @@ A short introduction in generic programming in modern C++ with a nice list of re
 </details>
 
 <details>
-<summary>Linux Setup</summary>
+<summary>Linux Setup (Ubuntu)</summary>
 <br>
 <pre>
 sudo apt-get update
