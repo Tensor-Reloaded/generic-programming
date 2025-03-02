@@ -11,7 +11,7 @@ void draw_on_canvas(BaseCanvas& baseCanvas, Drawable& drawable) {
 }
 ```
 This function will compile for any derived types but may fail at runtime if the `draw` method is not overridden.
-While this is a reasonable approach, substitution with derived types is done at runtime using RTTI. Moreover, the function call incurs overhead due to the pointer indirection required by the `vfptr`. Furthermore, using the OOP approach becomes messy when a type needs to derive from multiple base classes, such as being both drawable, serializable, and so on.
+While this is a reasonable approach, substitution with derived types is done at runtime. If explicit type identification is required, RTTI introduces further costs. Moreover, the function call incurs overhead due to the pointer indirection required by the `vfptr`. Furthermore, using the OOP approach becomes messy when a type needs to derive from multiple base classes, such as being both drawable, serializable, and so on.
 ***
 Instead of dynamic polymorphism and runtime function dispatch, C++ offers a powerful compile-time tool: templates. Templates in C++ are used to create generic functions and classes that can operate on any type of data. Using templates, the above function can be rewritten as:
 ```
