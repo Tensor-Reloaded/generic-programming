@@ -25,8 +25,9 @@ sudo apt install g++-14
 </details>
 
 ## Contents
+0. What is Generic Programming?: [0.a-short-story](./0.a-short-story/).
 1. Introduction to C++20 modules: [1.modules](./1.modules/).
-1. Introduction to concepts: [2.concepts](./2.concepts/).
+2. Introduction to concepts: [2.concepts](./2.concepts/).
 
 ***
 
