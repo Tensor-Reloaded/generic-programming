@@ -1,7 +1,7 @@
 # Generic Programming: A short (hi)story
 
 ## What is generic programming?
-
+* Generic programming is a programming paradigm that focuses on writing code that can work with different data types without being rewritten, promoting flexibility and reusability. It allows developers to create algorithms and data structures that are independent of specific data types, working with any types that satisfy certain concepts, regardless of their specific implementation, making the code more general and adaptable to various situations.
 * "The term generic programming was originally coined by David Musser and Alexander Stepanov (...) to describe a programming paradigm in which fundamental requirements on data types are abstracted from across concrete examples of algorithms and data structures and formalized as concepts, with generic functions implemented in terms of these concepts (...)" (Wikipedia, https://en.wikipedia.org/wiki/Generic_programming).
 * "Generic programming centers around the idea of abstracting from concrete, efficient algorithms to obtain generic algorithms that can be combined with different data representations to produce a wide variety of useful software" (Musser, David R., and Alexander A. Stepanov. "Generic programming." International Symposium on Symbolic and Algebraic Computation. Berlin, Heidelberg: Springer Berlin Heidelberg, 1988).
 * Many modern programming languages incorporate generic programming principles, which are needed to achieve both flexibility and efficiency in fields such as high-performance computing, numerical simulations, and machine learning.
