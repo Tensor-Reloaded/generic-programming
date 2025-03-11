@@ -8,7 +8,7 @@ Iterators are analogous to coordinates as they indicate positions within a seque
 Just like in mathematics, where a semi-open range `[a, b)` includes the starting point `a` but excludes `b`, iterators follow the same principle with `[first, last)`. 
 This ensures that iteration stops precisely at `last`, preventing out-of-bounds access and making empty ranges naturally expressible when `first == last`. 
 This approach simplifies loop conditions and improves consistency across algorithms. Most algorithms working with iterators look like this:
-```
+```c++
 // function declaration
 while(first != last) {
     // process *first
@@ -42,7 +42,7 @@ while(first != last) {
 
 ### Copying
 We can use iterators to implement algorithms working on containers, ranges, and even views. Let's consider the `copy` algorithm.
-```
+```c++
 template<std::input_iterator I, std::sentinel_for<I> S, std::weakly_incrementable O>
     requires std::indirectly_copyable<I, O>
 O copy(I first, S last, O output) {
@@ -59,7 +59,7 @@ This algorithm copies the range of elements between `[first, last)` to the outpu
 When writing generic functions, it is always a good idea to return everything our caller may need. This is why we return `output`, which is now the coordinate right after the last value from `[first, last)` was copied to the output range.
 
 We can also write a version of `copy` that receives a full range as an input.
-```
+```c++
 template<std::ranges::input_range R, std::weakly_incrementable O>
     requires std::indirectly_copyable<std::ranges::iterator_t<R>, O>
 O copy(R&& range, O output) {
@@ -69,7 +69,7 @@ O copy(R&& range, O output) {
 
 ### Transforming
 If instead of copying, we want to transform elements, we can write a `transform` function:
-```
+```c++
 export template <std::input_iterator I, std::sentinel_for<I> S, std::weakly_incrementable O, class Fn, class T = std::iter_value_t<I>>
     requires std::indirectly_writable<O, std::invoke_result_t<Fn, T>>
 O transform(I first, S last, O output, Fn fn) {
@@ -89,7 +89,7 @@ O transform(R&& range, O output, Fn fn) {
 ```
 
 Usage example:
-```
+```c++
 auto vec = std::vector{1, 2, 3, 4, 5};
 auto another = std::vector<int>(vec.size(), 0); // another is  {0, 0, 0, 0, 0}
 transform(vec, another.begin(), [](int x) {
@@ -100,7 +100,7 @@ transform(vec, another.begin(), [](int x) {
 });
 // another is now {0, 4, 2, 8, 4}
 ```
-```
+```c++
 auto vec = std::vector{1, 2, 3, 4, 5};
 transform(vec, vec.begin(), [](int x) {
     return x * x;
@@ -112,7 +112,7 @@ transform(vec, vec.begin(), [](int x) {
 **Homework**: Implement `copy_if` and `transform_if`.
 
 ### Linear searching
-```
+```c++
 template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
 I find(I first, S last, const T &value) {
     while (first != last) {
@@ -131,7 +131,7 @@ I find(R&& range, const T& value) {
 ```
 
 Consider the following code:
-```
+```c++
 constexpr auto size = 500'000;
 // vec is a vector with a random permutation of all elements between [0, size)
 for (int i = 0; i < size; ++i) {
@@ -162,13 +162,13 @@ A table of possible results would be
 ### Inner product
 
 First, we define a concept that will help us in specifying the requirements for the function:
-```
+```c++
 template <class Fn, class T, class... Args>
 concept returns_t = std::regular_invocable<Fn, Args...> and std::same_as<std::invoke_result_t<Fn, Args...>, T>;
 ```
 
 Now we define a reduce function that accepts two ranges, a binary operation that combines elements from each range, and a reduce operation that reduces everything to a single value.
-```
+```c++
 template <std::input_iterator I, std::sentinel_for<I> S, class BinaryOp, class ReduceOp, class T = std::iter_value_t<I>>
     requires returns_t<BinaryOp, T, T, T> and returns_t<ReduceOp, T, T, T>
 T reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp reduceOp) {
@@ -183,7 +183,7 @@ T reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp reduce
 
 Now we can write our inner product between two ranges using the `reduce` we defined above.
 
-```
+```c++
 template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
 T inner_product(I first1, S last1, I first2) {
     return reduce(first1, last1, first2, T{}, std::multiplies<>{}, std::plus<>{});
@@ -191,7 +191,7 @@ T inner_product(I first1, S last1, I first2) {
 ```
 
 This function will take two vectors, multiply the values element-wise and sum them. Can we write a faster version?
-```
+```c++
 template <std::input_iterator I, std::sentinel_for<I> S, class BinaryOp, class ReduceOp, class T = std::iter_value_t<I>>
     requires returns_t<BinaryOp, T, T, T> and returns_t<ReduceOp, T, T, T>
 T fast_reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp reduceOp) {
@@ -216,7 +216,7 @@ T fast_inner_product(I first1, S last1, I first2) {
 Calculating the distance between two iterators is `O(n)` for forward and bidirectional iterators, and `O(1)` for random access iterators. When our iterators allows random access, we can specialize the algorithms to take advantage of this feature and reorder the binary and reduce operations to enable better instruction-level parallelism, cache efficiency, and potential vectorization, leading to potential performance improvements.
 
 Can we write a faster version?
-```
+```c++
 template <std::input_iterator I, std::sentinel_for<I> S, class BinaryOp, class ReduceOp, class T = std::iter_value_t<I>>
     requires returns_t<BinaryOp, T, T, T> and returns_t<ReduceOp, T, T, T>
 T faster_reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp reduceOp) {

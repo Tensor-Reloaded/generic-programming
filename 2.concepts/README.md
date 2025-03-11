@@ -4,7 +4,7 @@ See https://en.wikipedia.org/wiki/Concepts_(C%2B%2B).
 ***
 
 Writing generic code is usually handled in OOP by implementing a function in terms of a base object that needs to be inherited. For example:
-```
+```c++
 // BaseCanvas and Drawable are pure abstract classes.
 void draw_on_canvas(BaseCanvas& baseCanvas, Drawable& drawable) {
     drawable.draw(baseCanvas);
@@ -14,7 +14,7 @@ This function will compile for any derived types but may fail at runtime if the 
 While this is a reasonable approach, substitution with derived types is done at runtime. If explicit type identification is required, RTTI introduces further costs. Moreover, the function call incurs overhead due to the pointer indirection required by the `vfptr`. Furthermore, using the OOP approach becomes messy when a type needs to derive from multiple base classes, such as being both drawable, serializable, and so on.
 ***
 Instead of dynamic polymorphism and runtime function dispatch, C++ offers a powerful compile-time tool: templates. Templates in C++ are used to create generic functions and classes that can operate on any type of data. Using templates, the above function can be rewritten as:
-```
+```c++
 void draw_on_canvas(auto& canvas, auto& drawable) {
     drawable.draw(canvas);
 }
@@ -32,7 +32,7 @@ Templates are often considered hard to use and "black magic" due to unreadable c
 Concepts extend templates by providing powerful predicate evaluation features for template parameters, enforcing compile-time constraints and providing better error messages.
 
 There are many useful concepts provided by the standard library, and we can define custom concepts as follows:
-```
+```c++
 // We define the Canvas concept. Let's assume that canvases need to have a display method, 
 // a resize method that accepts a width and a height, and a clear method.
 
@@ -54,7 +54,7 @@ concept Drawable = requires(T a, CanvasType b) {
 // that accepts a type satisfying the Canvas concept.
 ```
 We can use the defined concepts as follows:
-```
+```c++
 // Drawable is a concept that depends on the canvas, therefore we must explicitly specify
 // decltype(canvas) as the template argument for Drawable to ensure that drawable is
 // constrained to a type that can draw on the given canvas.
