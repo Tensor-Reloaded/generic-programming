@@ -114,8 +114,11 @@ transform(vec, vec.begin(), [](int x) {
 ### Linear searching
 ```
 template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
-I find(I first, S last, const T& value) {
-    while (first != last and *first != value) {
+I find(I first, S last, const T &value) {
+    while (first != last) {
+        if (*first == value) {
+            break;
+        }
         ++first;
     }
     return first;
