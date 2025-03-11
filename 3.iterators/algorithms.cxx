@@ -138,8 +138,8 @@ T faster_reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp
             T aux6 = reduceOp(aux3, aux4);
             T aux7 = reduceOp(aux5, aux6);
             init = reduceOp(init, aux7);
-            first1 += 4;
-            first2 += 4;
+            first1 += 8;
+            first2 += 8;
         }
     }
     return reduce(first1, last1, first2, init, binaryOp, reduceOp);
