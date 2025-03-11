@@ -54,7 +54,7 @@ O copy(I first, S last, O output) {
     return output;
 }
 ```
-This algorithm copies the range of elements between `[first, last)` to the output iterator `output`. While most constraints are specified using compile time concepts, this algorithm also requires that the output iterator `output` is valid and incrementable until `first == last` (memory is reserved and we can copy). This means that `output` should be a valid iterator from a range at least as long as `std::distance(first, last)`, or `output` is an iterator adaptor that can grow its own range as needed.
+This algorithm copies the range of elements between `[first, last)` to the output iterator `output`. While most constraints are specified using compile time concepts, this algorithm also requires that the output iterator `output` is valid and incrementable until `first == last` (memory is reserved and we can copy). This means that `output` should be an iterator from a range with size greater or equal to `std::distance(first, last)`, or `output` is an iterator adaptor that can grow its own range as needed.
 
 When writing generic functions, it is always a good idea to return everything our caller may need. This is why we return `output`, which is now the coordinate right after the last value from `[first, last)` was copied to the output range.
 
