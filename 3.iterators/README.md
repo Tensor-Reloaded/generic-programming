@@ -39,8 +39,7 @@ while(first != last) {
 
 ## Searching a range
 ```
-template <std::input_iterator I, std::sentinel_for<I> S, class T>
-requires std::equality_comparable_with<std::iter_value_t<I>, T>
+template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
 I find(I first, S last, const T& value) {
     while (first != last and *first != value) {
         ++first;
@@ -48,9 +47,8 @@ I find(I first, S last, const T& value) {
     return first;
 }
 
-template <std::ranges::input_range R, class T, class I = ranges::iterator_t<R>>
-requires std::equality_comparable_with<std::iter_value_t<I>, T>
-I find(R range, const T& value) {
+template <std::ranges::input_range R, class I = ranges::iterator_t<R>, class T = std::iter_value_t<I>>
+I find(R&& range, const T& value) {
     return find(std::ranges::begin(range), std::ranges::end(range), value);
 }
 ```
