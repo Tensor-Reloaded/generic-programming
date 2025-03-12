@@ -10,7 +10,7 @@ default: all
 time:
 	${TIME_CMD} ./$(BUILD_DIR)/${EXE}.exe
 
-all: compile run
+all: clean compile run
 
 run:
 	./$(BUILD_DIR)/main.exe

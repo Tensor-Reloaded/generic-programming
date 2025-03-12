@@ -213,7 +213,7 @@ T fast_inner_product(I first1, S last1, I first2) {
     return fast_reduce(first1, last1, first2, T{}, std::multiplies<>{}, std::plus<>{});
 }
 ```
-Calculating the distance between two iterators is `O(n)` for forward and bidirectional iterators, and `O(1)` for random access iterators. When our iterators allows random access, we can specialize the algorithms to take advantage of this feature and reorder the binary and reduce operations to enable better instruction-level parallelism, cache efficiency, and potential vectorization, leading to potential performance improvements.
+Calculating the distance between two iterators is `O(n)` for forward and bidirectional iterators, and `O(1)` for random access iterators. When our iterators allows random access, we can specialize the algorithms to take advantage of this feature and reorder the binary and reduce operations to enable better instruction-level parallelism, cache efficiency, and potential vectorization, leading to potential performance improvements and numerical stability.
 
 Can we write a faster version?
 ```c++
