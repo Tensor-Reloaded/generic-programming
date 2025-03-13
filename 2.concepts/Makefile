@@ -1,7 +1,7 @@
 COMPILER = g++-14
 BUILD_DIR = build
 OPTIMIZATION = -O2
-COMPILER_FLAG = -fmodules-ts -Wall -Wextra ${OPTIMIZATION} -std=c++23
+COMPILER_FLAG = -Wall -Wextra ${OPTIMIZATION} -std=c++23
 TIME_CMD = /usr/bin/time -f "\nElapsed Time: %E User Time: %U System Time: %S CPU Usage: %P"
 EXE ?= main
 

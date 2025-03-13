@@ -3,6 +3,7 @@ A short introduction in generic programming in modern C++ with a nice list of re
 
 ## Requirements
 * g++ >= 14
+* It should also compile with the latest versions of clang or MSVC, when using the c++23 standard. If it doesn't, use the `no_modules` version.
 
 <details>
 <summary>For Windows: WSL</summary>

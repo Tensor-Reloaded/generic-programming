@@ -1,8 +1,7 @@
-module;
+#pragma once
+
 #include <concepts>
 #include <ranges>
-
-export module algorithms;
 
 template <std::input_iterator I, std::sentinel_for<I> S, std::weakly_incrementable O>
     requires std::indirectly_copyable<I, O>
@@ -15,13 +14,13 @@ O copy(I first, S last, O output) {
     return output;
 }
 
-export template <std::ranges::input_range R, std::weakly_incrementable O>
+template <std::ranges::input_range R, std::weakly_incrementable O>
     requires std::indirectly_copyable<std::ranges::iterator_t<R>, O>
 O copy(R &&range, O output) {
     return copy(std::ranges::begin(range), std::ranges::end(range), output);
 }
 
-export template <std::input_iterator I, std::sentinel_for<I> S, std::weakly_incrementable O, class Fn, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, std::weakly_incrementable O, class Fn, class T = std::iter_value_t<I>>
     requires std::indirectly_writable<O, std::invoke_result_t<Fn, T>>
 O transform(I first, S last, O output, Fn fn) {
     while (first != last) {
@@ -32,7 +31,7 @@ O transform(I first, S last, O output, Fn fn) {
     return output;
 }
 
-export template <std::ranges::input_range R, std::weakly_incrementable O, class Fn, class I = std::ranges::iterator_t<R>, class T = std::iter_value_t<I>>
+template <std::ranges::input_range R, std::weakly_incrementable O, class Fn, class I = std::ranges::iterator_t<R>, class T = std::iter_value_t<I>>
     requires std::indirectly_writable<O, std::invoke_result_t<Fn, T>>
 O transform(R &&range, O output, Fn fn) {
     return transform(std::ranges::begin(range), std::ranges::end(range), output, fn);
@@ -49,7 +48,7 @@ concept reducible = requires(T x, T y) {
 template <class Fn, class T, class... Args>
 concept returns_t = std::regular_invocable<Fn, Args...> and std::same_as<std::invoke_result_t<Fn, Args...>, T>;
 
-export template <std::input_iterator I, std::sentinel_for<I> S, class ReduceOp, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, class ReduceOp, class T = std::iter_value_t<I>>
     requires returns_t<ReduceOp, T, T, T>
 T reduce(I first, S last, T init, ReduceOp fn) {
     while (first != last) {
@@ -59,7 +58,7 @@ T reduce(I first, S last, T init, ReduceOp fn) {
     return init;
 }
 
-export template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
     requires reducible<T>
 T reduce(I first, S last) {
     T init{};
@@ -72,7 +71,7 @@ T reduce(I first, S last) {
     return reduce(first, last, T{}, std::plus<>());
 }
 
-export template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
 I find(I first, S last, const T &value) {
     while (first != last) {
         if (*first == value) {
@@ -83,12 +82,12 @@ I find(I first, S last, const T &value) {
     return first;
 }
 
-export template <std::ranges::input_range R, class I = std::ranges::iterator_t<R>, class T = std::iter_value_t<I>>
+template <std::ranges::input_range R, class I = std::ranges::iterator_t<R>, class T = std::iter_value_t<I>>
 I find(R &&range, const T &value) {
     return find(std::ranges::begin(range), std::ranges::end(range), value);
 }
 
-export template <std::input_iterator I, std::sentinel_for<I> S, class BinaryOp, class ReduceOp, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, class BinaryOp, class ReduceOp, class T = std::iter_value_t<I>>
     requires returns_t<BinaryOp, T, T, T> and returns_t<ReduceOp, T, T, T>
 T reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp reduceOp) {
     while (first1 != last1) {
@@ -99,12 +98,12 @@ T reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp reduce
     return init;
 }
 
-export template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
 T inner_product(I first1, S last1, I first2) {
     return reduce(first1, last1, first2, T{}, std::multiplies<>{}, std::plus<>{});
 }
 
-export template <std::input_iterator I, std::sentinel_for<I> S, class BinaryOp, class ReduceOp, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, class BinaryOp, class ReduceOp, class T = std::iter_value_t<I>>
     requires returns_t<BinaryOp, T, T, T> and returns_t<ReduceOp, T, T, T>
 T fast_reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp reduceOp) {
     if constexpr (std::random_access_iterator<I>) {
@@ -120,12 +119,12 @@ T fast_reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp r
     return reduce(first1, last1, first2, init, binaryOp, reduceOp);
 }
 
-export template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
 T fast_inner_product(I first1, S last1, I first2) {
     return fast_reduce(first1, last1, first2, T{}, std::multiplies<>{}, std::plus<>{});
 }
 
-export template <std::input_iterator I, std::sentinel_for<I> S, class BinaryOp, class ReduceOp, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, class BinaryOp, class ReduceOp, class T = std::iter_value_t<I>>
     requires returns_t<BinaryOp, T, T, T> and returns_t<ReduceOp, T, T, T>
 T faster_reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp reduceOp) {
     if constexpr (std::random_access_iterator<I>) {
@@ -145,7 +144,7 @@ T faster_reduce(I first1, S last1, I first2, T init, BinaryOp binaryOp, ReduceOp
     return reduce(first1, last1, first2, init, binaryOp, reduceOp);
 }
 
-export template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
+template <std::input_iterator I, std::sentinel_for<I> S, class T = std::iter_value_t<I>>
 T faster_inner_product(I first1, S last1, I first2) {
     return faster_reduce(first1, last1, first2, T{}, std::multiplies<>{}, std::plus<>{});
 }
