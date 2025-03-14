@@ -250,5 +250,34 @@ A table of possible results would be
 | fast_inner_product       | 1'000'000'000 | 1.121097s |
 | faster_inner_product       | 1'000'000'000 | 1.075829s  |
 
+#### Additional breakdown of faster inner product
+The compiler can reorder and vectorize operations depending on the optimization level provided that the semantics are not changed. Below we have the simple sequential version.
+```c++
+aux = binaryOp(*first1, *first2); // you have to wait for while condition to be evaluated
+init = reduceOp(init, aux); // you have to wait for aux to be computed
+++first1; // you have to wait for init to be computed
+++first2; // you have to wait for init to be computed, but can be executed in parallel with ++first1;
+```
+
+The CPU has to execute at least `3n` operations. For the faster (un)sequential version, the compiler has the opportunity to parallelize more of the operations:
+```c++
+T aux_binary_0 = binaryOp(first1[0], first2[0]); // you have to wait for while condition to be evaluated
+T aux_binary_1 = binaryOp(first1[1], first2[1]); // you have to wait for while condition to be evaluated, but can execute this in parallel with aux_binary_0
+T aux_binary_2 = binaryOp(first1[2], first2[2]); // you have to wait for while condition to be evaluated, but can execute this in parallel with aux_binary_0
+T aux_binary_3 = binaryOp(first1[3], first2[3]); // you have to wait for while condition to be evaluated, but can execute this in parallel with aux_binary_0
+T aux_reduce_1 = reduceOp(aux_binary_0, aux_binary_1); // you have to wait for aux_binary_0 and aux_binary_1 to be computed
+T aux_reduce_2 = reduceOp(aux_binary_2, aux_binary_2); // you have to wait for aux_binary_1 and aux_binary_2 to be computed, but can execute this in parallel with aux_reduce_1
+T aux_reduce_3 = reduceOp(aux_reduce_1, aux_reduce_2); // you have to wait for aux_reduce_1 and aux_reduce_2
+init = reduceOp(init, aux_reduce_3); // you have to wait for aux_reduce_3
+first1 += 4; // you have to wait for aux_binary_0-aux_binary_3 to be computed, but can execute this in paralle with aux_reduce_1
+first2 += 4; // you have to wait for aux_binary_0-aux_binary_3 to be computed, but can execute this in paralle with aux_reduce_1
+```
+
+Asuming that the CPU is able to execute the operations in the optimal way, it would be able to do only `4 * n / 4 = n` operations, making it at least 3 time faster than the sequential version.
+For longer and more time consuming reduce operations, we can consider splitting the range into `num_threads` subranges that can be separately processed in different threads and the thread results are later reduced in the main process.
+
+**Important** Unsequenced or parallel `reduce` asumes that the `reduceOp` is associative!
+
+
 ## References
 * https://en.cppreference.com/w/cpp/header/iterator
