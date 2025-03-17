@@ -11,8 +11,40 @@ void do_not_optimize(auto x) {
     [[maybe_unused]] volatile auto y = x;
 }
 
+void test_sort() {
+    constexpr auto size = 10'000'000;
+    auto vec = random_container<std::vector<std::int32_t>>(size);
+    auto vec_copy = vec;
+
+    auto init = [&vec, &vec_copy]() {
+        vec_copy  = vec; // we reinitialize
+    };
+    auto sort_seq = [&vec_copy]() {
+        std::sort(std::execution::seq, vec_copy.begin(), vec_copy.end());
+        do_not_optimize(vec_copy.begin());
+    };
+    auto sort_par = [&vec_copy]() {
+        std::sort(std::execution::par, vec_copy.begin(), vec_copy.end());
+        do_not_optimize(vec_copy.begin());
+    };
+    auto sort_par_unseq = [&vec_copy]() {
+        std::sort(std::execution::par_unseq, vec_copy.begin(), vec_copy.end());
+        do_not_optimize(vec_copy.begin());
+    };
+    auto sort_unseq = [&vec_copy]() {
+        std::sort(std::execution::unseq, vec_copy.begin(), vec_copy.end());
+        do_not_optimize(vec_copy.begin());
+    };
+    
+    timer::time_print(init, sort_seq, 5, "sequential sort");
+    timer::time_print(init, sort_par, 5, "parallel sort");
+    timer::time_print(init, sort_par_unseq, 5, "parallel unseq sort");
+    timer::time_print(init, sort_unseq, 5, "unseq sort");
+}
+
+
 void test_find() {
-    constexpr auto size = 700'000'000;
+    constexpr auto size = 500'000'000;
     auto vec = random_container<std::vector<std::int32_t>>(size);
     auto last = vec.back();
 
@@ -26,35 +58,12 @@ void test_find() {
             return elem == last;
         }));
     };
-    auto stl_find_seq = [last, &vec]() {
-        do_not_optimize(std::find_if(std::execution::seq, vec.begin(), vec.end(), [last](auto elem) {
-            return elem == last;
-        }));
-    };
-    auto stl_find_par = [last, &vec]() {
-        do_not_optimize(std::find_if(std::execution::par, vec.begin(), vec.end(), [last](auto elem) {
-            return elem == last;
-        }));
-    };
-    auto stl_find_par_unseq = [last, &vec]() {
-        do_not_optimize(std::find_if(std::execution::par_unseq, vec.begin(), vec.end(), [last](auto elem) {
-            return elem == last;
-        }));
-    };
-    auto stl_find_unseq = [last, &vec]() {
-        do_not_optimize(std::find_if(std::execution::unseq, vec.begin(), vec.end(), [last](auto elem) {
-            return elem == last;
-        }));
-    };
-    timer::time_print(find_seq, 5, "Sequential find");
-    timer::time_print(find_par, 5, "Parallel find");
-    timer::time_print(stl_find_seq, 5, "STL sequential find");
-    timer::time_print(stl_find_par, 5, "STL parallel find");
-    timer::time_print(stl_find_par_unseq, 5, "STL parallel unseq find");
-    timer::time_print(stl_find_unseq, 5, "STL unseq find");
+    timer::time_print(find_seq, 10, "Sequential find");
+    timer::time_print(find_par, 10, "Parallel find");
 }
 
 
 int main() {
-    test_find();
+    // test_find();
+    test_sort();
 }

@@ -17,7 +17,7 @@ run:
 
 
 compile: $(BUILD_DIR)
-	${COMPILER} ${COMPILER_FLAG} main.cpp -o $(BUILD_DIR)/main.exe
+	${COMPILER} ${COMPILER_FLAG} -o $(BUILD_DIR)/main.exe main.cpp -ltbb
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
