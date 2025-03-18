@@ -32,7 +32,7 @@ sudo apt install g++-14
 3. Iterators: [3.iterators](./3.iterators/).
 4. Minimum and maximum: [4.minmax](./4.minmax/).
 5. Intruduction to parallel algorithms: [5.parallel](./5.parallel/).
-6. Search algorithms: [6.searc](./6.search/).
+6. Search algorithms: [6.search](./6.search/).
 
 ***
 
