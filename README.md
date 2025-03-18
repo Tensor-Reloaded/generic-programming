@@ -31,7 +31,8 @@ sudo apt install g++-14
 2. Introduction to concepts: [2.concepts](./2.concepts/).
 3. Iterators: [3.iterators](./3.iterators/).
 4. Minimum and maximum: [4.minmax](./4.minmax/).
-5. Minimum and maximum: [5.parallel](./5.parallel/).
+5. Intruduction to parallel algorithms: [5.parallel](./5.parallel/).
+6. Search algorithms: [6.searc](./6.search/).
 
 ***
 
