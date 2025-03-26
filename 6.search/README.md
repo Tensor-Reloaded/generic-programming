@@ -145,7 +145,7 @@ I next(I first, std::uint64_t n) {
 template <std::forward_iterator I, std::integral N, class Pred>
     requires std::indirect_unary_predicate<Pred, I>
 I partition_point_n(I first, N n, P pred) {
-    // precondition: is_partitioned_n(first, n, pred) is true, but we can't check for that because without traversing the whole range.
+    // precondition: is_partitioned_n(first, n, pred) is true, but we can't check for that without traversing the whole range.
     // so we just believe the caller knows what they're doing.
     // and they should, otherwise we would not be able to write efficient code.
     while (n != 0) {
