@@ -122,14 +122,16 @@ Similarly, we can implement a function that checks whether a counted range is a 
 template <std::input_iterator I, std::integral N, class Pred>
     requires std::indirect_unary_predicate<Pred, I>
 bool is_partitioned_n(I first, N n, P pred) {
-    auto [first_false, n_false] = find_if_not_n(first, n, pred); // we get the first position which returns false, and how many elements we still have in the range
-    auto [_, n_true] = find_if_n(first_false, n_false, pred); // we get the next position which returns true, and how many elements we still have in the remaining range
+    auto [first_false, n_false] = find_if_not_n(first, n, pred);
+    // we get the first position which returns false, and how many elements we still have in the range
+    auto [_, n_true] = find_if_n(first_false, n_false, pred);
+    // we get the next position which returns true, and how many elements we still have in the remaining range
     return n_true == 0; // if we have no elements in the range, we didn't find any true that is after a false
 }
 ```
 Now, assuming that a range is partitioned using a predicate, we can search for the partition point using `find_if` and the predicate in linear time. Can we do it in logarithmic time? 
 We will start implementing `partition_point_n` that will search for the partition point in a counted range. We implement the algorithm for counted ranges first because it is easier to understand.
-```
+```c++
 // First, let's define a helper function we will use later.
 template <std::forward_iterator I>
 I next(I first, std::uint64_t n) {
