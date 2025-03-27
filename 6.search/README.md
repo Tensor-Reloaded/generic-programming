@@ -66,6 +66,23 @@ std::pair<I, N> find_if_not_n(I first, N n, P pred) {
 ```
 We need to return both `first` and `n` from `find_if_n`, because otherwise the caller will not be able to deduce how far is the found element from the start of the range, and they will not be able to call `find_if_n` again to search for the second element that matches the condition if they lose the returned value of `n`.
 
+What if we want to find the last occurence in a range?
+```c++
+template <std::input_iterator I, std::sentinel_for<I> S, class Pred>
+    requires std::indirect_unary_predicate<Pred, I>
+I find_last_if(I first, S last, Pred pred) {
+    auto found = last;
+    while (first != last) {
+        if (pred(*first)) {
+            found = first;
+        }
+        ++first;
+    }
+    return found;
+}
+```
+
+**Homework**: Implement `find_last_if_not`, `find_last_if_n`, `find_last_if_not_n`.
 
 ### all, any, none
 
@@ -88,6 +105,85 @@ template <std::input_iterator I, std::sentinel_for<I> S, class Pred>
 bool any_of(I first, S last, Pred pred) {
     return find_if(first, last, pred) != last;
 }
+```
+
+### Find all
+
+How would we implement `find_all_of`? Let's consider what is different from the previous `find_*` versions. The most important aspect is that we need to return a range of values to the caller. 
+```c++
+template <std::input_iterator I, std::sentinel_for<I> S, class Pred, class T = std::iter_value_t<I>>
+    requires std::indirect_unary_predicate<Pred, I>
+std::vector<T> find_all_of_bad_1(I first, S last, Pred pred) {
+    std::vector<T> results;
+    while (first != last) {
+        if (pred(*first)) {
+            results.push_back(*first);
+        }
+        ++first;
+    }
+    return results;
+}
+```
+This might be the first idea that comes to our mind when implementing `find_all_of`. We return a `std::vector` with all the elements that matched the given predicate. But is this a good generic interface? What about users that need an `std::list` instead of an `std::vector`? What about users that have custom container implementations? What about users that do not have access to heap memory and want everything to be on stack? Using an `std::vector` that allocates memory for `find_all_of` forces all of these users to not use our function as it is not *generic* and *efficient* enough.
+
+```c++
+template <std::input_iterator I, std::sentinel_for<I> S, std::output_iterator O, class Pred, class T = std::iter_value_t<I>>
+    requires std::indirect_unary_predicate<Pred, I> and std::indirectly_writable<O, T>
+template <std::input_iterator I, std::sentinel_for<I> S, class Pred, class T = std::iter_value_t<I>>
+    requires std::indirect_unary_predicate<Pred, I>
+void find_all_of_bad_2(I first, S last, O output, Pred pred) {
+    std::vector<T> results;
+    while (first != last) {
+        if (pred(*first)) {
+            output = *first;
+            ++output;
+        }
+        ++first;
+    }
+}
+```
+
+This implementation is better. The caller can call us with an already allocated output range, with a stack array, with an std::vector and so on, they only need to give us an output iterator. But is it enough? How does the user know whether we found anything, or how many elements did we find?
+
+```c++
+template <std::input_iterator I, std::sentinel_for<I> S, std::output_iterator O, class Pred, class T = std::iter_value_t<I>>
+    requires std::indirect_unary_predicate<Pred, I> and std::indirectly_writable<O, T>
+template <std::input_iterator I, std::sentinel_for<I> S, class Pred, class T = std::iter_value_t<I>>
+    requires std::indirect_unary_predicate<Pred, I>
+O find_all_of(I first, S last, O output, Pred pred) {
+    std::vector<T> results;
+    while (first != last) {
+        if (pred(*first)) {
+            output = *first;
+            ++output;
+        }
+        ++first;
+    }
+    return output;
+}
+```
+
+The interface is very important in generic programming for efficiency and composability.
+```c++
+std::vector<int> v1 = {1, 2, 3, 4, 5};
+std::vector<int> v2 = {6, 7, 8, 9, 10};
+std::array<int, 5> even; // we allocate a stack array with 5 elements.
+std::vector<int> even_heap;
+
+auto is_even = [](int x) {return x % 2;};
+
+auto last_event = find_all_of(v1.begin(), v1.end(), even.begin(), is_even);
+last_event = find_all_of(v2.begin(), v2.end(), last_even, is_even);
+// between even.begin() and last_even we have all 5 even elements.
+// even = [2, 4, 6, 8, 10]
+
+find_all_of(v1.begin(), v1.end(), std::back_inserter(even_heap), is_even); 
+// this writes to even_heap and grows it as needed on heap
+find_all_of(v2.begin(), v2.end(), std::back_inserter(even_heap), is_even);
+// even_heap = [2, 4, 6, 8, 10]
+auto last_even_heap = find_all_of(v2.begin(), v2.end(), even_heap.begin(), is_even);
+// even_heap = [6, 8, 10, 8, 10]
+// between even_heap.begin() and last_even_heap we have [6, 8, 10]
 ```
 
 
@@ -144,7 +240,7 @@ I next(I first, std::uint64_t n) {
 
 template <std::forward_iterator I, std::integral N, class Pred>
     requires std::indirect_unary_predicate<Pred, I>
-I partition_point_n(I first, N n, P pred) {
+I partition_point_n_bad(I first, N n, P pred) {
     // precondition: is_partitioned_n(first, n, pred) is true, but we can't check for that without traversing the whole range.
     // so we just believe the caller knows what they're doing.
     // and they should, otherwise we would not be able to write efficient code.
@@ -164,7 +260,32 @@ I partition_point_n(I first, N n, P pred) {
 
 **Question**: Why is `I` a forward iterator and not an input iterator?
 
-Those familiar with `binary_search` will notice that `partition_point_n` is identical with a well-written binary search. Questions:
+**Question**: Why is this partition_point_n bad?
+
+What if all the elements in the range satisfy the predicate? This is a valid partition, and the output of the function is `first + n` which is the first element beyond the range. What if we searched for the partition point in order to do a linear search in the second partition of the range? How can we do so when we don't know how many elements are in the second partition?
+
+```c++
+template <std::forward_iterator I, std::integral N, class Pred>
+    requires std::indirect_unary_predicate<Pred, I>
+std::pair<I, N> partition_point_n(I first, N n, P pred) {
+    // precondition: is_partitioned_n(first, n, pred) is true, but we can't check for that without traversing the whole range.
+    // so we just believe the caller knows what they're doing.
+    // and they should, otherwise we would not be able to write efficient code.
+    while (n != 0) {
+        N half = n / 2;
+        I mid = next(first, half);
+        if (pred(*mid)) {
+            first = next(mid, 1);
+            n -= half + 1;
+        } else {
+            n = half;
+        }
+    }
+    return {first, n}; // this is now the partition point!
+}
+```
+
+Those familiar with `binary_search` will notice that `partition_point_n` (at least the bad version) is identical with a well-written binary search. Questions:
 * is it faster than `find_if`?
 * can it ever be faster than `find_if` for forward iterators (linked lists)?
 
@@ -183,9 +304,23 @@ Now that we have implemented `partition_point_n`, let's implement `partition_poi
 template <std::input_iterator I, std::sentinel_for<I> S, class Pred>
     requires std::indirect_unary_predicate<Pred, I>
 I partition_point(I first, S last, Pred pred) {
-    return partition_point_n(first, std::distance(first, last), pred);
+    // return partition_point_n(first, std::distance(first, last), pred).first;
+    auto n = std::distance(first, last);
+    while (n != 0) {
+        N half = n / 2;
+        I mid = next(first, half);
+        if (pred(*mid)) {
+            first = next(mid, 1);
+            n -= half + 1;
+        } else {
+            n = half;
+        }
+    }
+    return first;
 }
 ```
+
+**Question**: Can we use `partition_point` with unreachable_sentinel?  
 
 ### Back to binary search
 

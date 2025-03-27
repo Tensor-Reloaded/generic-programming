@@ -22,10 +22,8 @@ sudo apt install libtbb-dev
 # Alternatively, (Intel-only), you can install
 # sudo apt install intel-oneapi-tbb
 # ...
-# mkdir -p build; g++-14 -Wall -Wextra -O2 -std=c++23 main.cpp -o build/main.exe -ltbb
+# mkdir -p build; g++-14 -Wall -Wextra -O2 -std=c++23 main.cpp -o build/main.exe -ltbb && ./build/main.exe
 ```
-
-On windows 
 
 ```c++
 // init vec 

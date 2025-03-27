@@ -64,6 +64,6 @@ void test_find() {
 
 
 int main() {
-    // test_find();
+    test_find();
     test_sort();
 }
