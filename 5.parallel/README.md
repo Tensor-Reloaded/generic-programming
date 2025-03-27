@@ -73,7 +73,10 @@ This is our custom find algorithm. We can implement a parallel version if we spl
 template <std::random_access_iterator I, std::sentinel_for<I> S, class Pred>
     requires std::indirect_unary_predicate<Pred, I>
 I parallel_find_if(I first, S last, Pred pred) {
-    // normally, this would check the length of the sequence and split it into chunks dynamically using an heuristic based on the length of the sequence and the available cpu cores.
+    static_assert(!std::is_same_v<S, std::unreachable_sentinel_t>,
+        "parallel_find_if does not support std::unreachable_sentinel_t as the sentinel type.");
+    // normally, this would check the length of the sequence and split it into chunks dynamically using an heuristic
+    // based on the length of the sequence and the available cpu cores.
     // it should also accept a threadpool if the user already has one
     auto chunk_size = std::distance(first, last) / 4;
     auto limit1 = std::next(first, chunk_size);
