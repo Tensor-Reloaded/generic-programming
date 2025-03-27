@@ -33,7 +33,7 @@ std::sort(std::execution::par, vec.begin(), vec.end()); // parallel sort
 // init vec
 std::sort(std::execution::par_unseq, vec.begin(), vec.end()); // parallel + vectorized sort
 // init vec
-std::sort(std::execution::par, vec.begin(), vec.end()); // vectorized sort
+std::sort(std::execution::unseq, vec.begin(), vec.end()); // vectorized sort
 ```
 
 A table of possible results would be
