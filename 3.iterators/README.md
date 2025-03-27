@@ -255,11 +255,11 @@ The compiler can reorder and vectorize operations depending on the optimization 
 ```c++
 aux = binaryOp(*first1, *first2); // you have to wait for while condition to be evaluated
 init = reduceOp(init, aux); // you have to wait for aux to be computed
-++first1; // you have to wait for init to be computed
-++first2; // you have to wait for init to be computed, but can be executed in parallel with ++first1;
+++first1; // you have to wait for aux to be computed, but can be executed in parallel with init;
+++first2; // you have to wait for aux to be computed, but can be executed in parallel with ++first1;
 ```
 
-The CPU has to execute at least `3n` operations. For the faster (un)sequential version, the compiler has the opportunity to parallelize more of the operations:
+The CPU has to execute at least `2n` operations. For the faster (un)sequential version, the compiler has the opportunity to parallelize more of the operations:
 ```c++
 T aux_binary_0 = binaryOp(first1[0], first2[0]); // you have to wait for while condition to be evaluated
 T aux_binary_1 = binaryOp(first1[1], first2[1]); // you have to wait for while condition to be evaluated, but can execute this in parallel with aux_binary_0
