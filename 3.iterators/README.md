@@ -109,7 +109,8 @@ transform(vec, vec.begin(), [](int x) {
 ```
 
 
-**Homework**: Implement `copy_if` and `transform_if`.
+#### Homework3.1
+Implement `copy_if` and `transform_if`.
 
 ### Linear searching
 ```c++
@@ -157,7 +158,8 @@ A table of possible results would be
 | v1       | 500'000 | 17.394937s |
 | v2       | 500'000 | 13.989906s |
 
-**Homework**: Implement `find_if` and `find_all`. 
+#### Homework3.2
+Implement `find_if` and `find_all`.
 
 ### Inner product
 
@@ -281,3 +283,9 @@ For longer and more time consuming reduce operations, we can consider splitting 
 
 ## References
 * https://en.cppreference.com/w/cpp/header/iterator
+
+## Homework
+
+* See [Homework3.1](#homework31).
+* See [Homework3.2](#homework32).
+* Implement a function that takes a point within a range and rotates the range so that the point becomes the first element, while all preceding elements are moved to the end.

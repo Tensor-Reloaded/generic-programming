@@ -141,4 +141,7 @@ std::pair<I, I> minmax_element(I first, I last, Compare comp) {
 }
 ```
 
-Comparint built-in types is not expensive, however comparing strings and entire ranges is expensive and minimizing the number of comparisons is needed for longer sequences.
+Comparing built-in types is not expensive, however comparing strings and entire ranges is expensive and minimizing the number of comparisons is needed for longer sequences.
+
+## Homework
+* Generate a range of 1000 floating point vectors and implement a comparator that compares two vectors using their L2-norm. Find the vector with the minimum and maximum norm, and compare the performance of using `min_element` and `max_element` separately with `minmax_element`.

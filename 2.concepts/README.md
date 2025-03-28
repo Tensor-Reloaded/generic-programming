@@ -93,3 +93,10 @@ make clean
 ## References
 * https://en.cppreference.com/w/cpp/concepts
 * https://en.cppreference.com/w/cpp/language/constraints
+
+## Homework
+
+* Define concepts for a SemiRegular type: "The semiregular concept specifies that a type is both copyable and default constructible. It is satisfied by types that behave similarly to built-in types like int, except that they need not support comparison with ==".
+* Define concepts for a Regular type: "The regular concept specifies that a type is regular, that is, it is copyable, default constructible, and equality comparable. It is satisfied by types that behave similarly to built-in types like int, and that are comparable with ==".
+* Define a concept for a numeric type that supports addition, subtraction, multiplication, and division.
+* Define concepts for a vector-like container, ensuring it supports element access and size retrieval.
