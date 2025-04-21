@@ -49,6 +49,7 @@ sudo apt install g++-14
     * [Videos](https://www.youtube.com/playlist?list=PLHxtyCq_WDLXryyw91lahwdtpZsmo4BGD)
     * [GitHub](https://github.com/rjernst/stepanov-components-course)
 * See https://sean-parent.stlab.cc/papers-and-presentations/.
+* Culture, history and civilization:  [Civilizing the Barbarians](https://www.youtube.com/playlist?list=PLHxtyCq_WDLXzT_CgYPtjYab8fyd2PkjB)
 
 
 ## References
